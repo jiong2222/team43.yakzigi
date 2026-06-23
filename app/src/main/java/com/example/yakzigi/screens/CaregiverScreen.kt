@@ -1,16 +1,25 @@
 package com.example.yakzigi.screens
 
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.yakzigi.AlarmReceiver
+import com.example.yakzigi.MedicineData
 
 @Composable
 fun CaregiverScreen() {
+
+    val context = LocalContext.current
 
     var medicineName by remember { mutableStateOf("") }
     var duration by remember { mutableStateOf("") }
@@ -116,15 +125,32 @@ fun CaregiverScreen() {
 
         Button(
             onClick = {
+                MedicineData.name = medicineName
+                MedicineData.duration = duration
+                MedicineData.frequency = frequency
+                MedicineData.timing = timing
+                MedicineData.alarmTime = alarmTime
+                MedicineData.taken = false
 
-                com.example.yakzigi.MedicineData.name = medicineName
-                com.example.yakzigi.MedicineData.duration = duration
-                com.example.yakzigi.MedicineData.frequency = frequency
-                com.example.yakzigi.MedicineData.timing = timing
-                com.example.yakzigi.MedicineData.alarmTime = alarmTime
-                com.example.yakzigi.MedicineData.taken = false
+                val intent = Intent(context, AlarmReceiver::class.java)
 
-                message = "저장되었습니다. 노인용 화면에서 확인할 수 있습니다."
+                val pendingIntent = PendingIntent.getBroadcast(
+                    context,
+                    0,
+                    intent,
+                    PendingIntent.FLAG_IMMUTABLE
+                )
+
+                val alarmManager =
+                    context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+                alarmManager.set(
+                    AlarmManager.RTC_WAKEUP,
+                    System.currentTimeMillis() + 10000,
+                    pendingIntent
+                )
+
+                message = "저장되었습니다. 10초 뒤 복약 알림이 울립니다."
             },
             modifier = Modifier.fillMaxWidth()
         ) {
