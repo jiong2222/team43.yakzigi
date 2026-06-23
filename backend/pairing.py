@@ -38,12 +38,3 @@ def join_family(senior_name, code):
     })
     print(f"✅ {senior_name}님이 가족에 연결됐어요! (family_id: {family_id})")
     return family_id
-
-
-# ===== 테스트 =====
-if __name__ == "__main__":
-    # 돌봄자가 가족 만들기
-    code = create_family("김돌봄")
-
-    # 노인이 그 코드로 연결
-    join_family("박할머니", code)
