@@ -8,11 +8,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.yakzigi.MedicineData
 
 @Composable
 fun ElderlyScreen() {
 
-    var message by remember { mutableStateOf("아직 복용 전입니다.") }
+    var message by remember {
+        mutableStateOf(
+            if (MedicineData.taken) "복용 완료되었습니다." else "아직 복용 전입니다."
+        )
+    }
 
     Column(
         modifier = Modifier
@@ -30,19 +35,17 @@ fun ElderlyScreen() {
 
         Spacer(modifier = Modifier.height(30.dp))
 
-        Card(
-            modifier = Modifier.fillMaxWidth()
-        ) {
+        Card(modifier = Modifier.fillMaxWidth()) {
             Column(
                 modifier = Modifier.padding(24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text("💊 타이레놀", fontSize = 30.sp)
+                Text("💊 ${MedicineData.name}", fontSize = 30.sp)
                 Spacer(modifier = Modifier.height(15.dp))
-                Text("복용일수: 3일", fontSize = 22.sp)
-                Text("하루 복용횟수: 하루 3번", fontSize = 22.sp)
-                Text("복용 시점: 식후 30분", fontSize = 22.sp)
-                Text("복용 시간: 09:00", fontSize = 22.sp)
+                Text("복용일수: ${MedicineData.duration}", fontSize = 22.sp)
+                Text("하루 복용횟수: ${MedicineData.frequency}", fontSize = 22.sp)
+                Text("복용 시점: ${MedicineData.timing}", fontSize = 22.sp)
+                Text("복용 시간: ${MedicineData.alarmTime}", fontSize = 22.sp)
             }
         }
 
@@ -50,6 +53,7 @@ fun ElderlyScreen() {
 
         Button(
             onClick = {
+                MedicineData.taken = true
                 message = "복용 완료되었습니다."
             },
             modifier = Modifier
@@ -61,9 +65,6 @@ fun ElderlyScreen() {
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        Text(
-            text = message,
-            fontSize = 22.sp
-        )
+        Text(text = message, fontSize = 22.sp)
     }
 }

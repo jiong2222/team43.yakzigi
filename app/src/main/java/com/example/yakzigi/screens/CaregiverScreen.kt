@@ -116,6 +116,14 @@ fun CaregiverScreen() {
 
         Button(
             onClick = {
+
+                com.example.yakzigi.MedicineData.name = medicineName
+                com.example.yakzigi.MedicineData.duration = duration
+                com.example.yakzigi.MedicineData.frequency = frequency
+                com.example.yakzigi.MedicineData.timing = timing
+                com.example.yakzigi.MedicineData.alarmTime = alarmTime
+                com.example.yakzigi.MedicineData.taken = false
+
                 message = "저장되었습니다. 노인용 화면에서 확인할 수 있습니다."
             },
             modifier = Modifier.fillMaxWidth()
