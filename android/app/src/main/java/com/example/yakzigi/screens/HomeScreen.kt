@@ -1,6 +1,5 @@
 package com.example.yakzigi.screens
 
-
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -14,9 +13,9 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun HomeScreen(
     onCaregiverClick: () -> Unit,
-    onElderlyClick: () -> Unit
+    onElderlyClick: () -> Unit,
+    onPairingClick: () -> Unit
 ) {
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -24,7 +23,6 @@ fun HomeScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-
         Text(
             text = "약지기",
             fontSize = 40.sp,
@@ -41,6 +39,12 @@ fun HomeScreen(
 
         Button(onClick = onElderlyClick) {
             Text("노인")
+        }
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        Button(onClick = onPairingClick) {
+            Text("가족 페어링")
         }
     }
 }

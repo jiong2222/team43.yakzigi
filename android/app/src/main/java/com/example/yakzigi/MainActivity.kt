@@ -10,6 +10,7 @@ import com.example.yakzigi.screens.CaregiverScreen
 import com.example.yakzigi.screens.ElderlyScreen
 import com.example.yakzigi.screens.HomeScreen
 import com.example.yakzigi.screens.LoginScreen
+import com.example.yakzigi.screens.PairingScreen
 import com.example.yakzigi.screens.RegisterScreen
 
 class MainActivity : ComponentActivity() {
@@ -61,6 +62,9 @@ class MainActivity : ComponentActivity() {
                         },
                         onElderlyClick = {
                             navController.navigate("elderly")
+                        },
+                        onPairingClick = {
+                            navController.navigate("pairing")
                         }
                     )
                 }
@@ -71,6 +75,10 @@ class MainActivity : ComponentActivity() {
 
                 composable("elderly") {
                     ElderlyScreen()
+                }
+
+                composable("pairing") {
+                    PairingScreen()
                 }
             }
         }
