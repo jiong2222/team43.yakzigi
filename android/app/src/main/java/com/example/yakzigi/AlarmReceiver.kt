@@ -1,6 +1,5 @@
 package com.example.yakzigi
 
-
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.BroadcastReceiver
@@ -24,13 +23,14 @@ class AlarmReceiver : BroadcastReceiver() {
                 "복약 알림",
                 NotificationManager.IMPORTANCE_HIGH
             )
+
             notificationManager.createNotificationChannel(channel)
         }
 
         val notification = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(android.R.drawable.ic_dialog_info)
             .setContentTitle("약지기 복약 알림")
-            .setContentText("${MedicineData.name} 복용 시간입니다.")
+            .setContentText("복용 시간입니다.")
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .build()
 

@@ -1,11 +1,15 @@
 package com.example.yakzigi
 
+import androidx.compose.runtime.mutableStateListOf
+
+data class Medicine(
+    var name: String = "",
+    var duration_days: Int = 0,
+    var times_per_day: Int = 0,
+    var take_timing: String = "",
+    var alarm_times: List<String> = listOf()
+)
 
 object MedicineData {
-    var name = "타이레놀"
-    var duration = "3일"
-    var frequency = "하루 3번"
-    var timing = "식후 30분"
-    var alarmTime = "09:00"
-    var taken = false
+    var medicines = mutableStateListOf<Medicine>()
 }

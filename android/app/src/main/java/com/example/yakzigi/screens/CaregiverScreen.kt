@@ -14,6 +14,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.yakzigi.AlarmReceiver
+import com.example.yakzigi.Medicine
 import com.example.yakzigi.MedicineData
 
 @Composable
@@ -37,18 +38,15 @@ fun CaregiverScreen() {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        Text(
-            text = "돌봄자",
-            fontSize = 28.sp
-        )
+        Text(text = "돌봄자", fontSize = 28.sp)
 
         Spacer(modifier = Modifier.height(20.dp))
 
         Button(
             onClick = {
                 medicineName = "타이레놀"
-                duration = "3일"
-                frequency = "하루 3번"
+                duration = "3"
+                frequency = "3"
                 timing = "식후 30분"
                 alarmTime = "09:00"
                 message = "테스트 OCR 결과가 입력되었습니다."
@@ -125,12 +123,16 @@ fun CaregiverScreen() {
 
         Button(
             onClick = {
-                MedicineData.name = medicineName
-                MedicineData.duration = duration
-                MedicineData.frequency = frequency
-                MedicineData.timing = timing
-                MedicineData.alarmTime = alarmTime
-                MedicineData.taken = false
+                val newMedicine = Medicine(
+                    name = medicineName,
+                    duration_days = duration.toIntOrNull() ?: 0,
+                    times_per_day = frequency.toIntOrNull() ?: 0,
+                    take_timing = timing,
+                    alarm_times = listOf(alarmTime)
+                )
+
+                MedicineData.medicines.clear()
+                MedicineData.medicines.add(newMedicine)
 
                 val intent = Intent(context, AlarmReceiver::class.java)
 

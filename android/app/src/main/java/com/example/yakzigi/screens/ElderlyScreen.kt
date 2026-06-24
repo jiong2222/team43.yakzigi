@@ -13,10 +13,10 @@ import com.example.yakzigi.MedicineData
 @Composable
 fun ElderlyScreen() {
 
+    val medicine = MedicineData.medicines.firstOrNull()
+
     var message by remember {
-        mutableStateOf(
-            if (MedicineData.taken) "복용 완료되었습니다." else "아직 복용 전입니다."
-        )
+        mutableStateOf("아직 복용 전입니다.")
     }
 
     Column(
@@ -40,12 +40,19 @@ fun ElderlyScreen() {
                 modifier = Modifier.padding(24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text("💊 ${MedicineData.name}", fontSize = 30.sp)
-                Spacer(modifier = Modifier.height(15.dp))
-                Text("복용일수: ${MedicineData.duration}", fontSize = 22.sp)
-                Text("하루 복용횟수: ${MedicineData.frequency}", fontSize = 22.sp)
-                Text("복용 시점: ${MedicineData.timing}", fontSize = 22.sp)
-                Text("복용 시간: ${MedicineData.alarmTime}", fontSize = 22.sp)
+                if (medicine == null) {
+                    Text("등록된 약이 없습니다.", fontSize = 24.sp)
+                } else {
+                    Text("💊 ${medicine.name}", fontSize = 30.sp)
+                    Spacer(modifier = Modifier.height(15.dp))
+                    Text("복용일수: ${medicine.duration_days}일", fontSize = 22.sp)
+                    Text("하루 복용횟수: ${medicine.times_per_day}번", fontSize = 22.sp)
+                    Text("복용 시점: ${medicine.take_timing}", fontSize = 22.sp)
+                    Text(
+                        "복용 시간: ${medicine.alarm_times.joinToString(", ")}",
+                        fontSize = 22.sp
+                    )
+                }
             }
         }
 
@@ -53,7 +60,6 @@ fun ElderlyScreen() {
 
         Button(
             onClick = {
-                MedicineData.taken = true
                 message = "복용 완료되었습니다."
             },
             modifier = Modifier
