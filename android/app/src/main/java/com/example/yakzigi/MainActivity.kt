@@ -9,6 +9,8 @@ import androidx.navigation.compose.rememberNavController
 import com.example.yakzigi.screens.CaregiverScreen
 import com.example.yakzigi.screens.ElderlyScreen
 import com.example.yakzigi.screens.HomeScreen
+import com.example.yakzigi.screens.LoginScreen
+import com.example.yakzigi.screens.RegisterScreen
 
 class MainActivity : ComponentActivity() {
 
@@ -20,8 +22,38 @@ class MainActivity : ComponentActivity() {
 
             NavHost(
                 navController = navController,
-                startDestination = "home"
+                startDestination = "login"
             ) {
+                composable("login") {
+                    LoginScreen(
+                        onLoginSuccess = {
+                            navController.navigate("home") {
+                                popUpTo("login") {
+                                    inclusive = true
+                                }
+                            }
+                        },
+                        onRegisterClick = {
+                            navController.navigate("register")
+                        }
+                    )
+                }
+
+                composable("register") {
+                    RegisterScreen(
+                        onRegisterSuccess = {
+                            navController.navigate("home") {
+                                popUpTo("register") {
+                                    inclusive = true
+                                }
+                            }
+                        },
+                        onBackToLoginClick = {
+                            navController.navigate("login")
+                        }
+                    )
+                }
+
                 composable("home") {
                     HomeScreen(
                         onCaregiverClick = {
