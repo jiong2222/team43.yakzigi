@@ -16,14 +16,12 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-
             val navController = rememberNavController()
 
             NavHost(
                 navController = navController,
                 startDestination = "home"
             ) {
-
                 composable("home") {
                     HomeScreen(
                         onCaregiverClick = {
@@ -42,11 +40,7 @@ class MainActivity : ComponentActivity() {
                 composable("elderly") {
                     ElderlyScreen()
                 }
-
             }
-
         }
-
     }
-
 }
