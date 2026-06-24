@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.sp
 import com.example.yakzigi.AlarmReceiver
 import com.example.yakzigi.Medicine
 import com.example.yakzigi.MedicineData
+import com.google.firebase.firestore.FirebaseFirestore
 
 @Composable
 fun CaregiverScreen() {
@@ -133,6 +134,25 @@ fun CaregiverScreen() {
 
                 MedicineData.medicines.clear()
                 MedicineData.medicines.add(newMedicine)
+
+                val db = FirebaseFirestore.getInstance()
+
+                val medicineMap = hashMapOf(
+                    "name" to newMedicine.name,
+                    "duration_days" to newMedicine.duration_days,
+                    "times_per_day" to newMedicine.times_per_day,
+                    "take_timing" to newMedicine.take_timing,
+                    "alarm_times" to newMedicine.alarm_times
+                )
+
+                db.collection("medications")
+                    .add(medicineMap)
+                    .addOnSuccessListener {
+                        message = "저장되었습니다. Firebase에도 저장되었습니다."
+                    }
+                    .addOnFailureListener {
+                        message = "Firebase 저장에 실패했습니다."
+                    }
 
                 val intent = Intent(context, AlarmReceiver::class.java)
 
