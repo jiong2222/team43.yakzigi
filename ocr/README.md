@@ -1,7 +1,7 @@
-```markdown
+
 # 약지기 OCR 서버 실행 가이드
 
-## 🚨 [중요] 코랩 환경 버전 충돌 및 실행 순서 안내
+## [중요] 코랩 환경 버전 충돌 및 실행 순서 안내
 PaddleOCR 및 가상환경 내부 패키지 버전 마찰(특히 Numpy 2.0+ 이슈)을 방지하기 위해 **반드시 아래 가이드라인의 순서와 런타임 재시작을 준수**해 주세요.
 
 ---
@@ -42,10 +42,16 @@ drive.mount("/content/drive")
 
 ---
 
-## 2. ngrok 토큰 발급 및 세팅
+## 2. ngrok 토큰 및 의약품개요정보 API 인증키 발급 및 세팅
 
+### 2-1 ngrok
 1. [ngrok 공식 홈페이지](https://dashboard.ngrok.com) 가입 후 `Your Authtoken` 메뉴에서 문자열 복사
 2. `ocr_server.py` 코드 하단의 `ngrok.set_auth_token("YOUR_NGROK_TOKEN")` 공간에 해당 토큰 입력
+
+### 2-2 식품의약품안전처_의약품개요정보(e약은요)
+1. [공공데이터포탈]https://www.data.go.kr/index.do 가입
+2. https://www.data.go.kr/iim/api/selectAPIAcountView.do 이용 신청 후 일반 인증키 복사
+3. `ocr_server.py` 코드 단의 `DRUG_API_KEY ("YOUR_API_KEY")` 공간에 해당 토큰 입력
 
 ---
 
