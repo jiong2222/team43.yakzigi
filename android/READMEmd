@@ -1,0 +1,103 @@
+약지기 Android App
+
+가족.돌봄자를 위한 노인 복약관리시스템 - Android 앱
+
+담당: 원예지(2313910)
+
+
+1.앱이 하는 일
+Android 앱은 돌봄자와 노인이 사용할 수 있는 사용자 인터페이스를 제공합니다.
+
+<주요기능>
+Firebase 로그인 / 회원가입
+돌봄자 화면
+노인 화면
+가족 페어링 화면
+약 정보 입력 및 Firebase 저장
+복약 알림 설정
+OCR 서버 연동을 통한 약 정보 자동 입력
+-사용자->Andoid App->OCR 서버 ->약 정보 자동입력->Firebase Firestore 저장->복약알림
+
+2. 실행준비
+2-1. Firebase 프로젝트를 생성한 후 google-services.json->app/ 폴더에 넣습니다
+2-2. OCR 서버는 Colab에서 실행
+OCR 서버 실행 후 생성되는 ngrok 주소를 RetrofitClient.kt의
+BASE_URL에 입력합니다.
+
+<예시>
+private const val BASE_URL = "https://xxxxx.ngrok-free.dev/"
+※ ngrok 주소는 서버를 실행할 때마다 변경됩니다.
+
+3. 화면 구성
+
+<LoginScreen>
+Firebase로그인
+회원가입 화면 이동
+
+<RegisterScreen>
+Firebase 회원가입
+
+<HomeScreen>
+돌봄자
+노인
+가족 페어링 화면 이동
+
+<CaregiverScreen>
+갤러리에서 약봉투 사진 선택
+Ocr 서버 요청
+약 정보 자동입력
+Firebase 저장
+복약 알림 등록
+
+<ElderScreen>
+저장된 약 정보 조회
+
+<ParingScreen>
+가족 페어링 화면
+
+
+4. OCR API 연동
+Retrofit을 이용하여 OCR 서버와 통신합니다.
+
+<요청>
+post/ocr/parse
+이미지 업로드
+Multipart/form-data
+
+OCR 결과를 받아 약 이름, 복용일수, 복용횟수, 복용 시점을 자동 입력합니다.
+
+
+5. Firebase 저장
+약 정보는 Firestore의 medications컬랙션 저장됩니다.
+
+6. 복약 알림
+Android AlarmManger를 이용하여 복약 알림을 등록합니다.
+현재는 저장 후 테스트용으로 10초 뒤 알림 발생 구현
+
+7.팀원 연동
+<OCR>
+OCR서버 실행
+ngrok 주소 제공
+약 정보 json 반환
+
+<Backend>
+Firestore를 통해 약 정보 저장 및 조회
+
+<AndroidApp>
+OCR 서버 호출
+약 정보 자동 입력
+Firestore 저장
+복약 알림 등록
+
+8. 진행상황
+Firebase 로그인
+Firebase 회원가입
+홈 화면 구현
+돌봄자 화면 구현
+노인 화면 구현
+가족 페어링 화면 구현
+Firestore 저장 기능
+AlarmManager 복약 알림
+Retrofit OCR API 연동
+OCR 자동 입력 기능 구현
+팀 통합 테스트 진행
