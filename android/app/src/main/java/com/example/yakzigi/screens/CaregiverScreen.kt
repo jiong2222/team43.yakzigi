@@ -4,6 +4,9 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -16,7 +19,15 @@ import androidx.compose.ui.unit.sp
 import com.example.yakzigi.AlarmReceiver
 import com.example.yakzigi.Medicine
 import com.example.yakzigi.MedicineData
+import com.example.yakzigi.OcrResponse
+import com.example.yakzigi.RetrofitClient
 import com.google.firebase.firestore.FirebaseFirestore
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 @Composable
 fun CaregiverScreen() {
@@ -27,10 +38,75 @@ fun CaregiverScreen() {
     var duration by remember { mutableStateOf("") }
     var frequency by remember { mutableStateOf("") }
     var timing by remember { mutableStateOf("") }
-    var alarmTime by remember { mutableStateOf("") }
+    var alarmTime by remember { mutableStateOf("09:00") }
 
     var message by remember { mutableStateOf("") }
     var showSampleImage by remember { mutableStateOf(false) }
+
+    fun uploadImageToOcrServer(uri: Uri) {
+        message = "OCR 분석 중입니다..."
+
+        val inputStream = context.contentResolver.openInputStream(uri)
+
+        if (inputStream == null) {
+            message = "이미지를 불러오지 못했습니다."
+            return
+        }
+
+        val imageBytes = inputStream.readBytes()
+        inputStream.close()
+
+        val requestBody = imageBytes.toRequestBody("image/*".toMediaTypeOrNull())
+
+        val imagePart = MultipartBody.Part.createFormData(
+            "file",
+            "medicine_image.jpg",
+            requestBody
+        )
+
+        RetrofitClient.api.uploadImage(imagePart)
+            .enqueue(object : Callback<OcrResponse> {
+                override fun onResponse(
+                    call: Call<OcrResponse>,
+                    response: Response<OcrResponse>
+                ) {
+                    if (response.isSuccessful) {
+                        val result = response.body()
+                        val firstMedicine = result?.medicines?.firstOrNull()
+
+                        if (firstMedicine != null) {
+                            medicineName = firstMedicine.name
+                            duration = firstMedicine.duration_days.toString()
+                            frequency = firstMedicine.times_per_day.toString()
+                            timing = firstMedicine.take_timing
+                            alarmTime = "09:00"
+
+                            showSampleImage = true
+                            message = "OCR 결과가 자동 입력되었습니다."
+                        } else {
+                            message = "OCR 결과에서 약 정보를 찾지 못했습니다."
+                        }
+                    } else {
+                        message = "OCR 서버 응답 실패: ${response.code()}"
+                    }
+                }
+
+                override fun onFailure(call: Call<OcrResponse>, t: Throwable) {
+                    message = "OCR 서버 연결 실패: ${t.message}"
+                }
+            })
+    }
+
+    val imagePickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri ->
+        if (uri != null) {
+            showSampleImage = true
+            uploadImageToOcrServer(uri)
+        } else {
+            message = "사진 선택이 취소되었습니다."
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -45,13 +121,7 @@ fun CaregiverScreen() {
 
         Button(
             onClick = {
-                medicineName = "타이레놀"
-                duration = "3"
-                frequency = "3"
-                timing = "식후 30분"
-                alarmTime = "09:00"
-                message = "테스트 OCR 결과가 입력되었습니다."
-                showSampleImage = true
+                imagePickerLauncher.launch("image/*")
             }
         ) {
             Text("사진 선택")
@@ -171,8 +241,6 @@ fun CaregiverScreen() {
                     System.currentTimeMillis() + 10000,
                     pendingIntent
                 )
-
-                message = "저장되었습니다. 10초 뒤 복약 알림이 울립니다."
             },
             modifier = Modifier.fillMaxWidth()
         ) {

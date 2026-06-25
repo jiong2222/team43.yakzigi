@@ -8,10 +8,11 @@ import retrofit2.http.POST
 import retrofit2.http.Part
 
 interface OcrApi {
+
     @Multipart
     @POST("ocr/parse")
     fun uploadImage(
-        @Header("ngrok-skip-browser-warning") skipWarning: String = "true",
-        @Part file: MultipartBody.Part
+        @Part file: MultipartBody.Part,
+        @Header("ngrok-skip-browser-warning") skipWarning: String = "true"
     ): Call<OcrResponse>
 }
