@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.example.yakzigi.AlarmReceiver
 import com.example.yakzigi.Medicine
 import com.example.yakzigi.MedicineData
@@ -42,6 +43,7 @@ fun CaregiverScreen() {
 
     var message by remember { mutableStateOf("") }
     var showSampleImage by remember { mutableStateOf(false) }
+    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
 
     fun uploadImageToOcrServer(uri: Uri) {
         message = "OCR 분석 중입니다..."
@@ -101,6 +103,7 @@ fun CaregiverScreen() {
         contract = ActivityResultContracts.GetContent()
     ) { uri ->
         if (uri != null) {
+            selectedImageUri = uri
             showSampleImage = true
             uploadImageToOcrServer(uri)
         } else {
@@ -133,15 +136,14 @@ fun CaregiverScreen() {
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(100.dp),
+                    .height(160.dp),
                 shape = RoundedCornerShape(12.dp)
             ) {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text("선택한 약봉투 이미지")
-                }
+                AsyncImage(
+                    model = selectedImageUri,
+                    contentDescription = "선택한 약봉투 이미지",
+                    modifier = Modifier.fillMaxSize()
+                )
             }
 
             Spacer(modifier = Modifier.height(20.dp))

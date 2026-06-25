@@ -20,7 +20,7 @@ fun RegisterScreen(
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var role by remember { mutableStateOf("caregiver") }
+    var role by remember { mutableStateOf("") }
     var message by remember { mutableStateOf("") }
 
     Column(
@@ -56,7 +56,8 @@ fun RegisterScreen(
         OutlinedTextField(
             value = role,
             onValueChange = { role = it },
-            label = { Text("역할 caregiver 또는 senior") },
+            label = { Text("역할") },
+            placeholder = { Text("caregiver 또는 senior") },
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -64,6 +65,8 @@ fun RegisterScreen(
 
         Button(
             onClick = {
+                val savedRole = role.ifBlank { "caregiver" }
+
                 FirebaseAuth.getInstance()
                     .createUserWithEmailAndPassword(email, password)
                     .addOnSuccessListener { result ->
@@ -71,7 +74,7 @@ fun RegisterScreen(
 
                         val userMap = hashMapOf(
                             "email" to email,
-                            "role" to role,
+                            "role" to savedRole,
                             "family_id" to ""
                         )
 
